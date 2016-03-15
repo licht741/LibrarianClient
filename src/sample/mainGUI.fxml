@@ -31,7 +31,7 @@
             </AnchorPane>
           </content>
         </Tab>
-        <Tab id="usersTab" fx:id="usersTab" closable="true" disable="true" text="Пользователи">
+        <Tab id="usersTab" fx:id="usersTab" closable="true" disable="true" text="Пользователи" onSelectionChanged="#usersTabChangedHandler">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="410.0" prefWidth="775.0">
               <children>
@@ -48,7 +48,7 @@
             </AnchorPane>
           </content>
         </Tab>
-        <Tab id="booksListTab" fx:id="booksListTab" disable="true" text="Список книг">
+        <Tab id="booksListTab" fx:id="booksListTab" disable="true" text="Список книг" onSelectionChanged="#bookslistTabChangedHandler">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>
@@ -92,7 +92,7 @@
             </AnchorPane>
           </content>
         </Tab>
-        <Tab id="ordersTab" fx:id="ordersTab" disable="true" text="Заказы">
+        <Tab id="ordersTab" fx:id="ordersTab" disable="true" text="Заказы" onSelectionChanged="#ordersTabChangedHandler">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>
@@ -128,7 +128,7 @@
             </AnchorPane>
           </content>
         </Tab>
-        <Tab id="usersOrdersTab" fx:id="usersOrdersTab" disable="true" text="Заказы книг">
+        <Tab id="usersOrdersTab" fx:id="usersOrdersTab" disable="true" text="Заказы книг" onSelectionChanged="#usersOrdersTabChangedHandler">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>
@@ -144,7 +144,7 @@
             </AnchorPane>
           </content>
         </Tab>
-        <Tab fx:id="booksPurchaseTab" disable="true" text="Приобретение книг">
+        <Tab fx:id="booksPurchaseTab" disable="true" text="Приобретение книг" onSelectionChanged="#booksPurchaseTabChangedHandler">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>

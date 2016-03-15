@@ -4,13 +4,11 @@ package sample;
 import endpoint.AuthWrap;
 import endpoint.ILibrarianService;
 import endpoint.LibrarianServiceService;
-import types.controllers.BookController;
-import types.controllers.OperationController;
 
 
 /*
  *
- * Класс, инкапсулирующий логику авторизации и регистрации читателей
+ * Класс, инкапсулирующий логику авторизации и регистрации библиотекарей
  * Реализован паттерном Singleton
  *
  */
@@ -61,8 +59,6 @@ public class AuthorizationController {
                 this.name = authWrap.getUserName();
                 this.enabled = true;
 
-                //BookController.getInstance().setUserID(authWrap.getUserID());
-                //OperationController.getInstance().setUserID(authWrap.getUserID());
         }
         return authWrap.getResult();
     }

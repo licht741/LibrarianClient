@@ -46,8 +46,16 @@ public class BookController {
         return retResult;
     }
 
-    public void updateData() {
+    public void updateBooksList() {
         books.clear();
+        List<Book> arrayList = port.getAllBooks();
+        for (Book book : arrayList) {
+            BookAdapter bookAdapter = new BookAdapter(book);
+            books.add(bookAdapter);
+        }
+    }
+
+    public void updateBooksInLibList() {
         booksInLib.clear();
         HashMapWrapper booksInLibWrap = port.getBooksInLibrary();
         List<HashMapWrapper.BasketMap.Entry> booksInLibList = booksInLibWrap.getBasketMap().getEntry();
@@ -56,12 +64,6 @@ public class BookController {
             int count = entry.getValue();
             BookInLibraryAdapter bookAdapter = new BookInLibraryAdapter(book, count);
             booksInLib.add(bookAdapter);
-        }
-
-        List<Book> arrayList = port.getAllBooks();
-        for (Book book : arrayList) {
-            BookAdapter bookAdapter = new BookAdapter(book);
-            books.add(bookAdapter);
         }
     }
 
@@ -78,13 +80,10 @@ public class BookController {
         catch (DatatypeConfigurationException exc) {
             exc.printStackTrace();
         }
-
-
         int retResult = port.purchaseBook(bookID, storeID, count, date2);
-
         if (retResult == 0) {
             OperationController.getInstance().updateData();
-            BookController.getInstance().updateData();
+            BookController.getInstance().updateBooksInLibList();
         }
         return retResult;
     }

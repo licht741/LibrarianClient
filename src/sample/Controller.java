@@ -1,6 +1,7 @@
 package sample;
 
 import endpoint.Book;
+import endpoint.UserOrder;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -229,26 +230,6 @@ public class Controller {
         int retResult = BookController.getInstance().purchaseBook(bookIndex, shopIndex, count);
         int temp = 0;
     }
-//    @FXML
-//    private void makeOrderHandler() {
-//        int index = booksTable.getSelectionModel().getSelectedIndex();
-//        if (index < 0) {
-//            MakeOrderAlertBuilder.getBookIsNotSelectedAlert().showAndWait();
-//            return;
-//        }
-//        String count_str = newBookCountTextField.getText();
-//        Integer count = 0;
-//        try {
-//            count = Integer.parseInt(count_str);
-//        }
-//        catch (NumberFormatException exc) {
-//            MakeOrderAlertBuilder.getInvalidBookCountAlert().showAndWait();
-//        }
-//
-//        if (count <= 0)
-//
-//        BookController.getInstance().purchaseBook(index,)
-//    }
 
     @FXML
     private void lockDebtorButtonHandler() {
@@ -277,16 +258,7 @@ public class Controller {
 
     @FXML
     private void initialize() {
-
-        UserController.getInstance().updateData();
-        BookController.getInstance().updateData();
-        UserOrderController.getInstance().updateData();
-        PurchaseOrderController.getInstance().updateData();
-        OperationController.getInstance().updateData();
-        StoreController.getInstance().updateData();
-
         initializeUserTable();
-
         initializeBookTable();
         initializeBookInLibTable();
         initializeUserOrdersTable();
@@ -360,6 +332,43 @@ public class Controller {
                 authModeEnable();
         }
     }
+
+    @FXML
+    private void usersTabChangedHandler() {
+        if (usersTab.isSelected())
+            UserController.getInstance().updateData();
+    }
+    @FXML
+    private void bookslistTabChangedHandler() {
+        if (booksListTab.isSelected()) {
+            BookController.getInstance().updateBooksList();
+            BookController.getInstance().updateBooksInLibList();
+        }
+    }
+    @FXML
+    private void ordersTabChangedHandler() {
+        if (ordersTab.isSelected()) {
+            UserOrderController.getInstance().updateData();
+            PurchaseOrderController.getInstance().updateData();
+        }
+    }
+
+    @FXML
+    private void usersOrdersTabChangedHandler() {
+        if (usersOrdersTab.isSelected()) {
+            OperationController.getInstance().updateData();
+            UserOrderController.getInstance().updateData();
+        }
+    }
+
+    @FXML
+    private void booksPurchaseTabChangedHandler() {
+        if (booksPurchaseTab.isSelected()) {
+            BookController.getInstance().updateBooksList();
+            StoreController.getInstance().updateData();
+        }
+    }
+
 
     private void authModeEnable() {
         usersTab.setDisable(false);
