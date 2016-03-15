@@ -4,13 +4,35 @@ import endpoint.Operation;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+/*
+ * Адаптер над серверным классом Operation
+ * В JavaFX предпочтительно использовать Properties для полей класса-модели
+ * Это позволяет автоматически обновлять данные, показываемые пользователю
+ */
+
 public class OperationAdapter {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private int id;
     private SimpleStringProperty user;
     private SimpleStringProperty book;
-    private Date receivedDate;
-    private Date deadline;
+    private java.util.Date receivedDate;
+
+    private java.util.Date deadline;
+
+    private SimpleStringProperty receivedDateFormat;
+    private SimpleStringProperty deadlineDateFormat;
 
     public OperationAdapter(SimpleStringProperty user, SimpleStringProperty book, Date receivedDate, Date deadline, SimpleBooleanProperty isClosed) {
         this.user = user;
@@ -20,30 +42,19 @@ public class OperationAdapter {
     }
 
     public OperationAdapter(Operation operation) {
+        this.id = operation.getId();
         this.user = new SimpleStringProperty(operation.getUser());
+
         StringBuilder bookNameBuilder = new StringBuilder();
         bookNameBuilder.append(operation.getBook().getAuthor().trim() + " - ");
         bookNameBuilder.append(operation.getBook().getTitle().trim() + " (");
         bookNameBuilder.append(operation.getBook().getPublishHouse().trim() + " ,");
-        bookNameBuilder.append((operation.getBook().getYear() == 0 ? "<не указано>" : operation.getBook().getYear()) + ")");
+        bookNameBuilder.append(operation.getBook().getYear() + ")");
 
         this.book = new SimpleStringProperty(bookNameBuilder.toString());
 
-        int year = operation.getReceivedDate().getYear();
-        int month = operation.getReceivedDate().getMonth();
-        int day = operation.getReceivedDate().getDay();
-
-        this.receivedDate = operation.getReceivedDate() == null ?
-            new Date(year, month, day) :
-                null;
-
-        year = operation.getDeadline().getYear();
-        month = operation.getDeadline().getMonth();
-        day = operation.getDeadline().getDay();
-
-        this.deadline = operation.getDeadline() == null ?
-                new Date(year, month, day) :
-                null;
+        this.receivedDate = operation.getReceivedDate().toGregorianCalendar().getTime();
+        this.deadline = operation.getDeadline().toGregorianCalendar().getTime();
 
     }
 
@@ -85,5 +96,37 @@ public class OperationAdapter {
 
     public void setDeadline(Date deadline) {
         this.deadline = deadline;
+    }
+
+    public String getReceivedDateFormat() {
+        SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+        receivedDateFormat = new SimpleStringProperty(dt.format(receivedDate));
+        return receivedDateFormat.get();
+    }
+
+    public SimpleStringProperty receivedDateFormatProperty() {
+        SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+        receivedDateFormat = new SimpleStringProperty(dt.format(receivedDate));
+        return receivedDateFormat;
+    }
+
+    public void setReceivedDateFormat(String receivedDateFormat) {
+        this.receivedDateFormat.set(receivedDateFormat);
+    }
+
+    public String getDeadlineDateFormat() {
+        SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+        deadlineDateFormat = new SimpleStringProperty(dt.format(deadline));
+        return deadlineDateFormat.get();
+    }
+
+    public SimpleStringProperty deadlineDateFormatProperty() {
+        SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+        deadlineDateFormat = new SimpleStringProperty(dt.format(deadline));
+        return deadlineDateFormat;
+    }
+
+    public void setDeadlineDateFormat(String deadlineDateFormat) {
+        this.deadlineDateFormat.set(deadlineDateFormat);
     }
 }

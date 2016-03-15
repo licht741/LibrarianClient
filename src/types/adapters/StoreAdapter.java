@@ -12,16 +12,16 @@ public class StoreAdapter {
 
     public StoreAdapter(Store store) {
         this.id = store.getId();
-        this.name = new SimpleStringProperty(store.getName());
-        this.phone = new SimpleStringProperty(store.getPhone());
-        this.address = new SimpleStringProperty(store.getAddress());
+        this.name = new SimpleStringProperty(store.getName().trim());
+        this.phone = new SimpleStringProperty(store.getPhone().trim());
+        this.address = new SimpleStringProperty(store.getAddress().trim());
     }
 
     public StoreAdapter(int id, String name, String phone, String address) {
         this.id = id;
-        this.name = new SimpleStringProperty(name);
-        this.phone = new SimpleStringProperty(phone);
-        this.address = new SimpleStringProperty(address);
+        this.name = new SimpleStringProperty(name.trim());
+        this.phone = new SimpleStringProperty(phone.trim());
+        this.address = new SimpleStringProperty(address.trim());
     }
 
     public int getId() {

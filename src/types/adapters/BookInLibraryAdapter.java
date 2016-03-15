@@ -18,7 +18,7 @@ public class BookInLibraryAdapter {
         bookNameBuilder.append(book.getAuthor().trim() + " - ");
         bookNameBuilder.append(book.getTitle().trim() + " (");
         bookNameBuilder.append(book.getPublishHouse().trim() + " ,");
-        bookNameBuilder.append(book.getYear() + ")");
+        bookNameBuilder.append((book.getYear() == 0 ? "<не известно>" : book.getYear()) + ")");
 
         this.bookName = new SimpleStringProperty(bookNameBuilder.toString());
         this.bookCount = new SimpleIntegerProperty(count);

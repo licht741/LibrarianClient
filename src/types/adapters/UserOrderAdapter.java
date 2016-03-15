@@ -23,7 +23,7 @@ public class UserOrderAdapter {
         bookNameBuilder.append(book.getAuthor().trim() + " - ");
         bookNameBuilder.append(book.getTitle().trim() + " (");
         bookNameBuilder.append(book.getPublishHouse().trim() + " ,");
-        bookNameBuilder.append(book.getYear() + ")");
+        bookNameBuilder.append((book.getYear() == 0 ? "<не известно>" : book.getYear()) + ")");
 
         this.book = new SimpleStringProperty(bookNameBuilder.toString());
         this.count = new SimpleIntegerProperty(count);

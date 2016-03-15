@@ -27,7 +27,7 @@ public class PurchaseOrderAdapter {
         bookNameBuilder.append(purchaseOrder.getBook().getYear() + ")");
 
         this.book = new SimpleStringProperty(bookNameBuilder.toString());
-        this.shop = new SimpleStringProperty(purchaseOrder.getShop());
+        this.shop = new SimpleStringProperty(purchaseOrder.getShop().trim());
         this.count = new SimpleIntegerProperty(purchaseOrder.getCount());
 
         if (purchaseOrder.getDate() != null) {
@@ -38,9 +38,6 @@ public class PurchaseOrderAdapter {
         }
         else
             this.date = null;
-            //this.date = new Date(0, 0, 0);
-
-
 
     }
 

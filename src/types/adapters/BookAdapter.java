@@ -91,7 +91,7 @@ public class BookAdapter {
     }
 
     public int getYear() {
-        return year.get();
+        return year.get() == 0 ? null : year.get();
     }
 
     public SimpleIntegerProperty yearProperty() {
@@ -120,7 +120,6 @@ public class BookAdapter {
         bookNameBuilder.append(author.get().trim() + " - ");
         bookNameBuilder.append(title.get().trim() + " (");
         bookNameBuilder.append((year.get() == 0 ? "<не известно>" : year.get()) + ")");
-        bookNameBuilder.append(year.get() + ")");
         return bookNameBuilder.toString();
     }
 }
