@@ -20,8 +20,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("mainGUI.fxml"));
-        Scene scene = new Scene(root,1000, 600);
-        primaryStage.setTitle("FXML Example");
+        Scene scene = new Scene(root,900, 600);
+        primaryStage.setTitle("Библиотекарь");
         primaryStage.setScene(scene);
         primaryStage.show();
 

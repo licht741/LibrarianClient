@@ -4,6 +4,7 @@ import endpoint.PurchaseOrder;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PurchaseOrderAdapter {
@@ -11,6 +12,8 @@ public class PurchaseOrderAdapter {
     private SimpleStringProperty shop;
     private SimpleIntegerProperty count;
     private Date date;
+
+    private SimpleStringProperty dateFormat;
 
     public PurchaseOrderAdapter(SimpleStringProperty book, SimpleStringProperty shop, SimpleIntegerProperty count, Date date) {
         this.book = book;
@@ -30,15 +33,7 @@ public class PurchaseOrderAdapter {
         this.shop = new SimpleStringProperty(purchaseOrder.getShop().trim());
         this.count = new SimpleIntegerProperty(purchaseOrder.getCount());
 
-        if (purchaseOrder.getDate() != null) {
-            int year = purchaseOrder.getDate().getYear();
-            int month = purchaseOrder.getDate().getMonth();
-            int day = purchaseOrder.getDate().getDay();
-            this.date = new Date(year, month, day);
-        }
-        else
-            this.date = null;
-
+        this.date = purchaseOrder.getDate().toGregorianCalendar().getTime();
     }
 
     public String getBook() {
@@ -84,4 +79,26 @@ public class PurchaseOrderAdapter {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    public String getDateFormat() {
+        SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+        dateFormat = new SimpleStringProperty(dt.format(date));
+        return dateFormat.get();
+    }
+
+    public SimpleStringProperty dateFormatProperty() {
+        SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+        if (date != null) {
+            dateFormat = new SimpleStringProperty(dt.format(date));
+            return dateFormat;
+        }
+        else
+            return null;
+
+    }
+
+    public void setReceivedDateFormat(String receivedDateFormat) {
+        this.dateFormat.set(receivedDateFormat);
+    }
+
 }

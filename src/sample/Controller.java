@@ -1,5 +1,6 @@
 package sample;
 
+import endpoint.AddNewStore;
 import endpoint.Book;
 import endpoint.UserOrder;
 import javafx.event.EventHandler;
@@ -12,6 +13,7 @@ import types.adapters.*;
 import types.controllers.*;
 import types.AlertBuilders.*;
 
+import javax.xml.ws.WebServiceException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -120,8 +122,6 @@ public class Controller {
     @FXML
     private Button makePurchaseButton;
 
-    //@FXML
-    //private TextField countBooksTextField;
 
     @FXML
     private TableView ShopesTableView;
@@ -162,6 +162,10 @@ public class Controller {
     @FXML
     private Tab booksPurchaseTab;
 
+
+    /*
+     * Обработчик добавления новой книги в список
+     */
     @FXML
     private void addNewBookHandler() {
 
@@ -185,23 +189,40 @@ public class Controller {
             NewBookAdditionAlertBuilder.getInvalidBookDataAlert().showAndWait();
             return;
         }
-        int result = BookController.getInstance().addNewBook(title, author, pubHouse, pubYear);
-        int temp = 0;
+        int result;
+        try {
+            result  = BookController.getInstance().addNewBook(title, author, pubHouse, pubYear);
+        }
+        catch (WebServiceException exc) {
+            AlertAppDialogBuilder.getConnectionErrorAlert().showAndWait();
+            return;
+        }
 
+        if (result < 0)
+            AlertAppDialogBuilder.getConnectionErrorAlert().showAndWait();
     }
 
+
+    /*
+     * Обработчик добавления нового поставщика книг
+     */
     @FXML
     private void addNewStoreHandler() {
         String name = shopNameTextField.getText();
         String phone = shopPhoneTextField.getText();
         String address = shopAddressTextField.getText();
-
+        if (name.isEmpty() || phone.isEmpty() || address.isEmpty()) {
+            AddNewStoreAlertBuilder.getInvalidAdditionStoreAlert().showAndWait();
+            return;
+        }
         int result = StoreController.getInstance().addStore(name, phone, address);
         if (result == 0)
             AddNewStoreAlertBuilder.getInvalidAdditionStoreAlert().showAndWait();
-
     }
 
+    /*
+     * Обработчик приобретений библиотекой книг
+     */
     @FXML
     private void makePurchaseHandler() {
         int bookIndex = booksList.getSelectionModel().getSelectedIndex();
@@ -227,33 +248,60 @@ public class Controller {
         if (count <= 0)
             MakeOrderAlertBuilder.getInvalidBookCountAlert().showAndWait();
 
-        int retResult = BookController.getInstance().purchaseBook(bookIndex, shopIndex, count);
-        int temp = 0;
+        int retResult;
+        try {
+            retResult = BookController.getInstance().purchaseBook(bookIndex, shopIndex, count);
+        }
+        catch (WebServiceException exc) {
+            AlertAppDialogBuilder.getConnectionErrorAlert().showAndWait();
+        }
+
     }
 
+
+    /*
+     * Обработчик блокировки пользователя
+     */
     @FXML
     private void lockDebtorButtonHandler() {
         int index = usersTable.getSelectionModel().getSelectedIndex();
         if (index < 0) {
-            MakeOrderAlertBuilder.getBookIsNotSelectedAlert().showAndWait();
+            LockDebtorAlertBuilder.getUserIsNotSelectedAlert().showAndWait();
             return;
         }
-        int result = UserController.getInstance().lockDebtor(index);
-        if (result < 0)
-            MakeOrderAlertBuilder.getBookIsNotSelectedAlert().showAndWait();
 
+        int result;
+        try {
+            result = UserController.getInstance().lockDebtor(index);
+        }
+        catch (WebServiceException exc) {
+            AlertAppDialogBuilder.getConnectionErrorAlert().showAndWait();
+            return;
+        }
+        if (result < 0)
+            LockDebtorAlertBuilder.getUserIsNotDebtorAlert().showAndWait();
     }
 
+    /*
+     * Обработчик разблокировки пользователя
+     */
     @FXML
     private void unlockDebtorButtonHandler() {
         int index = usersTable.getSelectionModel().getSelectedIndex();
         if (index < 0) {
-            MakeOrderAlertBuilder.getBookIsNotSelectedAlert().showAndWait();
+            LockDebtorAlertBuilder.getUserIsNotSelectedAlert().showAndWait();
             return;
         }
-        int result = UserController.getInstance().unlockDebtor(index);
+        int result;
+        try {
+            result = UserController.getInstance().unlockDebtor(index);
+        }
+        catch (WebServiceException exc) {
+            AlertAppDialogBuilder.getConnectionErrorAlert().showAndWait();
+            return;
+        }
         if (result < 0)
-            MakeOrderAlertBuilder.getBookIsNotSelectedAlert().showAndWait();
+            AlertAppDialogBuilder.getConnectionErrorAlert().showAndWait();
     }
 
     @FXML
@@ -268,6 +316,9 @@ public class Controller {
 
     }
 
+    /*
+     * Обработчик регистрации новых пользователей
+     */
     @FXML
     private void regButtonHandler() {
         String login = authLoginTextField.getText();
@@ -293,7 +344,13 @@ public class Controller {
                 AlertRegistrationDialogBuilder.getSystemErrorAlert().showAndWait();
                 break;
             case 0:
-                authButtonHandler();
+                try {
+                    authButtonHandler();
+                }
+                catch (javax.xml.ws.WebServiceException exc) {
+                    AlertAppDialogBuilder.getConnectionErrorAlert().showAndWait();
+                }
+
         }
     }
 
@@ -332,6 +389,10 @@ public class Controller {
                 authModeEnable();
         }
     }
+
+    /*
+     * Обработчики переключения между таблицами.
+     */
 
     @FXML
     private void usersTabChangedHandler() {
@@ -378,6 +439,10 @@ public class Controller {
         booksPurchaseTab.setDisable(false);
     }
 
+    /*
+     * Привязка данных к контейнерам
+     */
+
     private void initializeStoreTable() {
 
         shopNameColumn.setCellValueFactory(new PropertyValueFactory<StoreAdapter, String>("name"));
@@ -418,15 +483,15 @@ public class Controller {
         PurchaseBookNameColumn.setCellValueFactory(new PropertyValueFactory<PurchaseOrderAdapter, String>("book"));
         PurchaseBookCountColumn.setCellValueFactory(new PropertyValueFactory<PurchaseOrderAdapter, Integer>("count"));
         PurchaseBookStoreColumn.setCellValueFactory(new PropertyValueFactory<PurchaseOrderAdapter, String>("shop"));
-        PurchaseBookDateColumn.setCellValueFactory(new PropertyValueFactory<PurchaseOrderAdapter, Integer>("date"));
+        PurchaseBookDateColumn.setCellValueFactory(new PropertyValueFactory<PurchaseOrderAdapter, String>("dateFormat"));
         PurchaseBookTable.setItems(PurchaseOrderController.getInstance().userOrders);
     }
 
     private void initializeTakingBookTable() {
         takingBookUser.setCellValueFactory(new PropertyValueFactory<OperationAdapter, String>("user"));
         takingBookBook.setCellValueFactory(new PropertyValueFactory<OperationAdapter, String>("book"));
-        takingBookRecData.setCellValueFactory(new PropertyValueFactory<OperationAdapter, Date>("receivedDate"));
-        takingBookDeadline.setCellValueFactory(new PropertyValueFactory<OperationAdapter, Date>("deadline"));
+        takingBookRecData.setCellValueFactory(new PropertyValueFactory<OperationAdapter, Date>("receivedDateFormat"));
+        takingBookDeadline.setCellValueFactory(new PropertyValueFactory<OperationAdapter, Date>("deadlineDateFormat"));
         takingBookTable.setItems(OperationController.getInstance().operationAdapters);
     }
 
